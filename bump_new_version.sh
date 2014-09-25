@@ -76,7 +76,7 @@ cd ..
 
 for folder in */
 do
-  if [ "$folder" != "core/" -a "$folder" != "famous-wrapper/" ]
+  if [ "$folder" != "core/" -a "$folder" != "famous-wrapper/" -a "$folder" != "ionic/" -a "$folder" != "ratchet/" ]
   then
     cd $folder
     echo
