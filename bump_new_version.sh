@@ -22,7 +22,6 @@ case "$1" in
             release_type="Major release"
             echo "$release_type!!!"
             ;;
-
         -m)
             next_major=$major
             ((next_minor=minor+1))
@@ -30,7 +29,6 @@ case "$1" in
             release_type="minor release"
             echo "$release_type!!"
             ;;
-
         -p)
             next_major=$major
             next_minor=$minor
@@ -94,4 +92,3 @@ do
     cd ..
   fi
 done
-
