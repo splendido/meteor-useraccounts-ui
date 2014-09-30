@@ -1,4 +1,5 @@
 #!/bin/bash
+
 for folder in */
 do
     echo
@@ -9,4 +10,3 @@ do
     git push
     cd ..
 done
-

@@ -22,7 +22,6 @@ case "$1" in
             release_type="Major release"
             echo "$release_type!!!"
             ;;
-
         -m)
             next_major=$major
             ((next_minor=minor+1))
@@ -30,7 +29,6 @@ case "$1" in
             release_type="minor release"
             echo "$release_type!!"
             ;;
-
         -p)
             next_major=$major
             next_minor=$minor
@@ -76,7 +74,7 @@ cd ..
 
 for folder in */
 do
-  if [ "$folder" != "core/" -a "$folder" != "famous-wrapper/" ]
+  if [ "$folder" != "core/" -a "$folder" != "famous-wrapper/" -a "$folder" != "ionic/" -a "$folder" != "ratchet/" ]
   then
     cd $folder
     echo
@@ -94,4 +92,3 @@ do
     cd ..
   fi
 done
-

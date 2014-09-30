@@ -8,5 +8,3 @@ do
     pwd
     git pull
     cd ..
-done
-
