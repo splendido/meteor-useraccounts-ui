@@ -1,5 +1,4 @@
 #!/bin/bash
-
 for folder in */
 do
     echo
@@ -9,4 +8,3 @@ do
     pwd
     git pull
     cd ..
-done
