@@ -69,10 +69,12 @@ sed -i "s/useraccounts:core@$curr_version/useraccounts:core@$next_version/g" pac
 git add . --all
 git commit -am "$release_type - Bump to version $next_version"
 git push
-echo "Creating tag..."
-git tag -a "$next_version" -m "$release_type - Bump to version $next_version"
-git push
-git push --tags
+echo "Done!"
+#echo "Creating tag..."
+#git tag -a "$next_version" -m "$release_type - Bump to version $next_version"
+#git push
+#git push --tags
+#echo "Done!"
 echo "Pushing release..."
 API_JSON=$(printf '{"tag_name": "v%s", "target_commitish": "master", "name": "v%s", "body": "%s - Bump to version %s", "draft": false, "prerelease": false}' $next_version $next_version "$release_type" $next_version)
 curl --data "$API_JSON" "https://api.github.com/repos/meteor-useraccounts/core/releases?access_token=$GITHUB_ACCESS_TOKEN"
@@ -100,10 +102,12 @@ do
     git add . --all
     git commit -am "$release_type - Bump to version $next_version"
     git push
-    echo "Creating tag..."
-    git tag -a "$next_version" -m "$release_type - Bump to version $next_version"
-    git push
-    git push --tags
+    echo "Done!"
+    #echo "Creating tag..."
+    #git tag -a "$next_version" -m "$release_type - Bump to version $next_version"
+    #git push
+    #git push --tags
+    #echo "Done!"
     echo "Pushing release..."
     API_JSON=$(printf '{"tag_name": "v%s", "target_commitish": "master", "name": "v%s", "body": "%s - Bump to version %s", "draft": false, "prerelease": false}' $next_version $next_version "$release_type" $next_version)
     curl --data "$API_JSON" "https://api.github.com/repos/meteor-useraccounts/"$folder"releases?access_token=$GITHUB_ACCESS_TOKEN"
