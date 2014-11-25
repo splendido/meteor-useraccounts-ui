@@ -45,6 +45,19 @@ case "$1" in
 esac
 next_version="$next_major.$next_minor.$next_patch"
 
+history_file="core/History.md"
+history_from=`grep -hnF "## v$next_version" $history_file | cut -f1 -d:`
+history_to=`grep -hnF "## v$curr_version" $history_file | cut -f1 -d:`
+history_from=$((history_from + 2))
+history_to=$((history_to - 1))
+
+release_msg=`sed -n $history_from","$history_to"p" < $history_file`
+release_msg=${release_msg//
+/\\\n} # \n (newline)
+
+
+API_JSON=$(printf '{"tag_name": "v%s", "target_commitish": "master", "name": "v%s", "body": "%s", "draft": false, "prerelease": false}' $next_version $next_version "$release_msg")
+
 echo
 echo
 echo "Current version: $curr_version"
@@ -57,67 +70,83 @@ echo "Major: $next_major"
 echo "Minor: $next_minor"
 echo "Patch: $next_patch"
 echo
-echo "Publishing version $next_version..."
-
-cd core
+echo "Publishing version $next_version with message:"
 echo
+echo "$release_msg"
 echo
-pwd
-echo "Bumping to version $next_version..."
-sed -i "s/version: \"$curr_version\"/version: \"$next_version\"/g" package.js
-sed -i "s/useraccounts:core@$curr_version/useraccounts:core@$next_version/g" package.js
-git add . --all
-git commit -am "$release_type - Bump to version $next_version"
-git push
-echo "Done!"
-#echo "Creating tag..."
-#git tag -a "$next_version" -m "$release_type - Bump to version $next_version"
-#git push
-#git push --tags
-#echo "Done!"
-echo "Pushing release..."
-API_JSON=$(printf '{"tag_name": "v%s", "target_commitish": "master", "name": "v%s", "body": "%s - Bump to version %s", "draft": false, "prerelease": false}' $next_version $next_version "$release_type" $next_version)
-curl --data "$API_JSON" "https://api.github.com/repos/meteor-useraccounts/core/releases?access_token=$GITHUB_ACCESS_TOKEN"
-echo "Done!"
-echo "Now Publishing..."
-meteor publish
-echo "Done!"
-cd ..
 
-for folder in */
-do
-  if [ "$folder" != "core/" -a "$folder" != "ionic/" -a "$folder" != "ratchet/" ]
-  then
-    cd $folder
+
+read -p "Are you sure? [y/n] " -n 1 -r
+echo    # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    cd core
     echo
     echo
     pwd
+
     echo "Bumping to version $next_version..."
     sed -i "s/version: \"$curr_version\"/version: \"$next_version\"/g" package.js
     sed -i "s/useraccounts:core@$curr_version/useraccounts:core@$next_version/g" package.js
-    sed -i "s/useraccounts:unstyled@$curr_version/useraccounts:unstyled@$next_version/g" package.js
-    sed -i "s/useraccounts:bootstrap@$curr_version/useraccounts:bootstrap@$next_version/g" package.js
-    sed -i "s/useraccounts:foundation@$curr_version/useraccounts:foundation@$next_version/g" package.js
-    sed -i "s/useraccounts:semantic-ui@$curr_version/useraccounts:semantic-ui@$next_version/g" package.js
     git add . --all
     git commit -am "$release_type - Bump to version $next_version"
     git push
     echo "Done!"
+
     #echo "Creating tag..."
     #git tag -a "$next_version" -m "$release_type - Bump to version $next_version"
     #git push
     #git push --tags
     #echo "Done!"
+
     echo "Pushing release..."
-    API_JSON=$(printf '{"tag_name": "v%s", "target_commitish": "master", "name": "v%s", "body": "%s - Bump to version %s", "draft": false, "prerelease": false}' $next_version $next_version "$release_type" $next_version)
-    curl --data "$API_JSON" "https://api.github.com/repos/meteor-useraccounts/"$folder"releases?access_token=$GITHUB_ACCESS_TOKEN"
-    echo
+    curl --data "$API_JSON" "https://api.github.com/repos/meteor-useraccounts/core/releases?access_token=$GITHUB_ACCESS_TOKEN"
     echo "Done!"
+
     echo "Now Publishing..."
     meteor publish
     echo "Done!"
-    cd ..
-  fi
-done
 
-echo "All Done!"
+    cd ..
+
+    for folder in */
+    do
+      if [ "$folder" != "core/" -a "$folder" != "ionic/" ]
+      then
+        cd $folder
+        echo
+        echo
+        pwd
+
+        echo "Bumping to version $next_version..."
+        sed -i "s/version: \"$curr_version\"/version: \"$next_version\"/g" package.js
+        sed -i "s/useraccounts:core@$curr_version/useraccounts:core@$next_version/g" package.js
+        sed -i "s/useraccounts:unstyled@$curr_version/useraccounts:unstyled@$next_version/g" package.js
+        sed -i "s/useraccounts:bootstrap@$curr_version/useraccounts:bootstrap@$next_version/g" package.js
+        sed -i "s/useraccounts:foundation@$curr_version/useraccounts:foundation@$next_version/g" package.js
+        sed -i "s/useraccounts:semantic-ui@$curr_version/useraccounts:semantic-ui@$next_version/g" package.js
+        git add . --all
+        git commit -am "$release_type - Bump to version $next_version"
+        git push
+        echo "Done!"
+
+        #echo "Creating tag..."
+        #git tag -a "$next_version" -m "$release_type - Bump to version $next_version"
+        #git push
+        #git push --tags
+        #echo "Done!"
+
+        echo "Pushing release..."
+        curl --data "$API_JSON" "https://api.github.com/repos/meteor-useraccounts/"$folder"releases?access_token=$GITHUB_ACCESS_TOKEN"
+        echo
+        echo "Done!"
+
+        echo "Now Publishing..."
+        meteor publish
+        echo "Done!"
+
+        cd ..
+      fi
+    done
+    echo "All Done!"
+fi
