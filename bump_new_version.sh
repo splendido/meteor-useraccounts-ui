@@ -111,14 +111,17 @@ then
 
     for folder in */
     do
-      if [ "$folder" != "core/" -a "$folder" != "ionic/" ]
+      if [ "$folder" != "core/" ]
       then
         cd $folder
         echo
         echo
         pwd
 
-        echo "Bumping to version $next_version..."
+        PACKAGE_NAME=$(grep -i name package.js | head -1 | cut -d "\"" -f 2)
+        ATMOSPHERE_NAME=${PACKAGE_NAME/://}
+
+        echo "Bumping $PACKAGE_NAME to version $next_version..."
         sed -i "s/version: \"$curr_version\"/version: \"$next_version\"/g" package.js
         sed -i "s/useraccounts:core@$curr_version/useraccounts:core@$next_version/g" package.js
         sed -i "s/useraccounts:unstyled@$curr_version/useraccounts:unstyled@$next_version/g" package.js
@@ -142,8 +145,33 @@ then
         echo "Done!"
 
         echo "Now Publishing..."
-        meteor publish
+        # attempt to re-publish the package - the most common operation once the initial release has been made
+        POTENTIAL_ERROR=$( meteor publish 2>&1 )
+
+        if [[ $POTENTIAL_ERROR =~ "There is no package named" ]]; then
+          # actually this is the first time the package is created, so pass the special --create flag and congratulate the maintainer
+          if meteor publish --create; then
+            echo "Thank you for creating the $PACKAGE_NAME Meteor package!"
+          else
+            echo "We got an error. Please post it at https://github.com/raix/Meteor-community-discussions/issues/14"
+          fi
+        else
+          if (( $? > 0 )); then
+            # the error wasn't that the package didn't exist, so we need to ask for help
+            echo "We got an error. Please post it at https://github.com/raix/Meteor-community-discussions/issues/14:
+            --------------------------------------------- 8< --------------------------------------------------------
+            $POTENTIAL_ERROR
+            --------------------------------------------- >8 --------------------------------------------------------
+            "
+          else
+            echo "Thanks for releasing a new version of $PACKAGE_NAME! You can see it at
+            https://atmospherejs.com/$ATMOSPHERE_NAME"
+          fi
+        fi
         echo "Done!"
+
+        # removes temporary build files
+        rm -rf ".build.$PACKAGE_NAME"
 
         cd ..
       fi
