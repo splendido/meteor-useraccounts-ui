@@ -111,7 +111,7 @@ then
 
     for folder in */
     do
-      if [ "$folder" != "core/" ]
+      if [ "$folder" != "core/" -a "$folder" != "pure.css/" ]
       then
         cd $folder
         echo
