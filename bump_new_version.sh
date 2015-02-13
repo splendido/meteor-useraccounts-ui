@@ -176,5 +176,9 @@ then
         cd ..
       fi
     done
+
+    # Clears .version files
+    rm `find . -name .versions`
+    
     echo "All Done!"
 fi
