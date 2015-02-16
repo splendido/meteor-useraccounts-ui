@@ -111,7 +111,7 @@ then
 
     for folder in */
     do
-      if [ "$folder" != "core/" -a "$folder" != "pure.css/" ]
+      if [ "$folder" != "core/" -a "$folder" != "init/" -a "$folder" != "oauth/" -a "$folder" != "password/" -a "$folder" != "pure.css/" ]
       then
         cd $folder
         echo
@@ -179,6 +179,6 @@ then
 
     # Clears .version files
     rm `find . -name .versions`
-    
+
     echo "All Done!"
 fi
