@@ -3,7 +3,7 @@
 curr_version=`cat core/package.js | grep version:`
 curr_version=${curr_version//[ ]/}
 curr_version=${curr_version//version:/}
-curr_version=${curr_version//[\"\,]/}
+curr_version=${curr_version//[\'\,]/}
 
 version=(${curr_version//./ })
 major=${version[0]}
@@ -86,7 +86,7 @@ then
     pwd
 
     echo "Bumping to version $next_version..."
-    sed -i "s/version: \"$curr_version\"/version: \"$next_version\"/g" package.js
+    sed -i "s/version: '$curr_version'/version: '$next_version'/g" package.js
     sed -i "s/useraccounts:core@$curr_version/useraccounts:core@$next_version/g" package.js
     git add . --all
     git commit -am "$release_type - Bump to version $next_version"
@@ -118,11 +118,11 @@ then
         echo
         pwd
 
-        PACKAGE_NAME=$(grep -i name package.js | head -1 | cut -d "\"" -f 2)
+        PACKAGE_NAME=$(grep -i name package.js | head -1 | cut -d "'" -f 2)
         ATMOSPHERE_NAME=${PACKAGE_NAME/://}
 
         echo "Bumping $PACKAGE_NAME to version $next_version..."
-        sed -i "s/version: \"$curr_version\"/version: \"$next_version\"/g" package.js
+        sed -i "s/version: '$curr_version'/version: '$next_version'/g" package.js
         sed -i "s/useraccounts:core@$curr_version/useraccounts:core@$next_version/g" package.js
         sed -i "s/useraccounts:unstyled@$curr_version/useraccounts:unstyled@$next_version/g" package.js
         sed -i "s/useraccounts:bootstrap@$curr_version/useraccounts:bootstrap@$next_version/g" package.js
