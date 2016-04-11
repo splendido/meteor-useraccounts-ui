@@ -123,11 +123,20 @@ then
 
         echo "Bumping $PACKAGE_NAME to version $next_version..."
         sed -i "s/version: '$curr_version'/version: '$next_version'/g" package.js
-        sed -i "s/useraccounts:core@$curr_version/useraccounts:core@$next_version/g" package.js
-        sed -i "s/useraccounts:unstyled@$curr_version/useraccounts:unstyled@$next_version/g" package.js
         sed -i "s/useraccounts:bootstrap@$curr_version/useraccounts:bootstrap@$next_version/g" package.js
+        sed -i "s/useraccounts:bulma@$curr_version/useraccounts:bulma@$next_version/g" package.js
+        sed -i "s/useraccounts:core@$curr_version/useraccounts:core@$next_version/g" package.js
+        sed -i "s/useraccounts:flow-routing@$curr_version/useraccounts:flow-routing@$next_version/g" package.js
         sed -i "s/useraccounts:foundation@$curr_version/useraccounts:foundation@$next_version/g" package.js
+        sed -i "s/useraccounts:foundation-sites@$curr_version/useraccounts:foundation-sites@$next_version/g" package.js
+        sed -i "s/useraccounts:ionic@$curr_version/useraccounts:ionic@$next_version/g" package.js
+        sed -i "s/useraccounts:iron-routing@$curr_version/useraccounts:iron-routing@$next_version/g" package.js
+        sed -i "s/useraccounts:materialize@$curr_version/useraccounts:materialize@$next_version/g" package.js
+        sed -i "s/useraccounts:mdl@$curr_version/useraccounts:mdl@$next_version/g" package.js
+        sed -i "s/useraccounts:polymer@$curr_version/useraccounts:polymer@$next_version/g" package.js
+        sed -i "s/useraccounts:ratchet@$curr_version/useraccounts:ratchet@$next_version/g" package.js
         sed -i "s/useraccounts:semantic-ui@$curr_version/useraccounts:semantic-ui@$next_version/g" package.js
+        sed -i "s/useraccounts:unstyled@$curr_version/useraccounts:unstyled@$next_version/g" package.js
         git add . --all
         git commit -am "$release_type - Bump to version $next_version"
         git push
